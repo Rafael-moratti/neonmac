@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Macumba: O Coração da Tupinambárbara</title>
+    <style>
+        :root {
+            --neon-pink: #ff0099;
+            --neon-blue: #00ccff;
+            --neon-green: #00ff99;
+            --neon-purple: #cc00ff;
+            --text-color: #ffffff;
+            --bg-color: #0a0a14;
+            --dark-bg: #050510;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+        
+        /* TELA INICIAL */
+        #start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            background-color: var(--dark-bg);
+        }
+        
+        .title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+            animation: pulse 2s infinite;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+        
+        #start-btn {
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            background-color: transparent;
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            cursor: pointer;
+            text-shadow: 0 0 5px var(--neon-green);
+            box-shadow: 0 0 10px var(--neon-green);
+            transition: all 0.3s;
+            border-radius: 5px;
+        }
+        
+        #start-btn:hover {
+            background-color: var(--neon-green);
+            color: var(--dark-bg);
+            transform: scale(1.1);
+        }
+        
+        /* ANIMAÇÃO DE BACKGROUND */
+        .neon-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(var(--dark-bg) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--dark-bg) 1px, transparent 1px);
+            background-size: 50px 50px;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            animation: grid-move 20s linear infinite;
+            opacity: 0.3;
+            z-index: 1;
+        }
+        
+        /* ELEMENTOS DO CYBERPUNK */
+        .cyber-symbol {
+            position: absolute;
+            color: var(--neon-purple);
+            font-size: 20px;
+            opacity: 0.6;
+            animation: float-random 10s linear infinite;
+            text-shadow: 0 0 5px var(--neon-purple);
+            z-index: 2;
+        }
+        
+        /* TELA DE PRÓLOGO */
+        #prologue-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9;
+            background-color: rgba(5, 5, 16, 0.9);
+            overflow: hidden;
+        }
+        
+        .prologue-text {
+            width: 80%;
+            max-width: 800px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: var(--text-color);
+            text-align: center;
+            transform: translateY(100vh);
+            animation: scroll-up 60s linear forwards;
+            padding: 2rem;
+        }
+        
+        /* TELAS DE HISTÓRIA */
+        .story-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 8;
+            background-color: var(--dark-bg);
+            padding: 2rem;
+            overflow: hidden;
+        }
+        
+        .story-container {
+            width: 90%;
+            max-width: 800px;
+            height: 70%;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue);
+            border-radius: 10px;
+            padding: 2rem;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        
+        .story-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            position: absolute;
+            width: calc(100% - 4rem);
+            transform: translateY(100%);
+            animation: scroll-up-story 30s linear forwards;
+            padding-bottom: 2rem;
+        }
+        
+        .choice-container {
+            width: 90%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .choice-btn {
+            padding: 1rem;
+            font-size: 1rem;
+            background-color: transparent;
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            cursor: pointer;
+            text-shadow: 0 0 5px var(--neon-green);
+            box-shadow: 0 0 10px var(--neon-green);
+            transition: all 0.3s;
+            border-radius: 5px;
+            text-align: left;
+        }
+        
+        .choice-btn:hover {
+            background-color: rgba(0, 255, 153, 0.2);
+            transform: translateX(10px);
+        }
+        
+        /* TELA DE COMBATE */
+        #combat-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 7;
+            background-color: var(--dark-bg);
+            padding: 2rem;
+        }
+        
+        .combat-area {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 1000px;
+            height: 50%;
+        }
+        
+        .player-character, .enemy-character {
+            width: 45%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .character-img {
+            width: 150px;
+            height: 150px;
+            border: 2px solid var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            overflow: hidden;
+        }
+        
+        .health-bar {
+            width: 100%;
+            height: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 5px var(--neon-blue);
+            margin-top: 1rem;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .health-fill {
+            height: 100%;
+            width: 100%;
+            background-color: var(--neon-green);
+            transition: width 0.5s;
+        }
+        
+        .combat-controls {
+            width: 90%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .combat-log {
+            height: 150px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            overflow-y: auto;
+            border-radius: 5px;
+        }
+        
+        .combat-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .action-btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            background-color: transparent;
+            border: 2px solid var(--neon-purple);
+            color: var(--neon-purple);
+            cursor: pointer;
+            text-shadow: 0 0 5px var(--neon-purple);
+            box-shadow: 0 0 10px var(--neon-purple);
+            transition: all 0.3s;
+            border-radius: 5px;
+            flex: 1 1 calc(50% - 1rem);
+            min-width: 200px;
+        }
+        
+        .action-btn:hover {
+            background-color: rgba(204, 0, 255, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        /* ANIMAÇÕES */
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        @keyframes grid-move {
+            0% {
+                transform: perspective(1000px) rotateX(60deg) translateZ(0) translateY(0);
+            }
+            100% {
+                transform: perspective(1000px) rotateX(60deg) translateZ(0) translateY(50px);
+            }
+        }
+        
+        @keyframes float-random {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+            25% {
+                transform: translate(10px, 10px);
+            }
+            50% {
+                transform: translate(-10px, 5px);
+            }
+            75% {
+                transform: translate(5px, -10px);
+            }
+        }
+        
+        @keyframes scroll-up {
+            0% { transform: translateY(100vh); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
+        }
+        
+        @keyframes scroll-up-story {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(-100%); }
+        }
+        
+        /* RESPONSIVIDADE */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .prologue-text, .story-text {
+                font-size: 1rem;
+            }
+            
+            .combat-area {
+                flex-direction: column;
+                align-items: center;
+                height: auto;
+                gap: 2rem;
+            }
+            
+            .player-character, .enemy-character {
+                width: 100%;
+                height: auto;
+            }
+            
+            .action-btn {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- TELA INICIAL -->
+    <div id="start-screen">
+        <h1 class="title">NEON MACUMBA</h1>
+        <h2 class="subtitle">O Coração da Tupinambárbara</h2>
+        <button id="start-btn">INICIAR JORNADA</button>
+    </div>
+    
+    <!-- GRID DE FUNDO NEON -->
+    <div class="neon-grid"></div>
+    
+    <!-- SÍMBOLOS CIBERNÉTICOS FLUTUANTES -->
+    <div class="cyber-symbols-container"></div>
+    
+    <!-- TELA DE PRÓLOGO -->
+    <div id="prologue-screen">
+        <div class="prologue-text">
+            <h2>PRÓLOGO</h2>
+            <br><br>
+            <p>O ano é <strong>2123</strong>. O que restou do Brasil agora se chama <strong>Tupinambárbara</strong>, uma megacidade onde arranha-céus de vidro encantado se erguem acima das favelas verticalizadas, e a floresta amazônica luta para se reerguer entre os becos iluminados por neon. A tecnologia convencional morreu há décadas, substituída pela <strong>Tecnomagia</strong>, uma fusão de feitiçaria ancestral e ciberimplantes esotéricos.</p>
+            <br>
+            <p>As megacorporações são terreiros de poder, e os CEOs são <strong>Pai de Santo-Executivos</strong>, mestres de um sincretismo tecnológico que mistura IA oracular com pombagiras digitais. As ruas são dominadas por gangues de <strong>capoeiristas cibernéticos</strong>, contrabandistas de <strong>dendê sintético</strong> e hackers que invocam entidades mágicas através de linhas de código místico.</p>
+            <br>
+            <p>No centro dessa distopia tropical, um segredo se esconde: <strong>o Coração da Tupinambárbara</strong>, um artefato lendário, dito capaz de reverter o colapso do país ou afundá-lo de vez.</p>
+            <br>
+            <p>Você é <strong>Jurema-404</strong>, uma <strong>macumbeira de código</strong>, uma ex-exu-hacker que foi expulsa de um terreiro digital por quebrar as regras sagradas do Acordo de Feitiçaria Corporativa. Agora, vive nos becos do <strong>Baixo Rio</strong>, vendendo encantamentos de segunda mão e invadindo bancos astrais para sobreviver. Mas quando um velho conhecido aparece com uma proposta impossível de recusar, seu destino se entrelaça ao do Coração da Tupinambárbara.</p>
+            <br><br>
+            <p>Sua jornada está prestes a começar...</p>
+        </div>
+    </div>
+    
+    <!-- TELAS DE HISTÓRIA -->
+    <div id="chapter1" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Capítulo 1: O Chamado do Zé Pilintra Cibernético</h2>
+                <br>
+                <p>A chuva ácida escorre pelos becos, refletindo os brilhos dos letreiros de neon que piscam em iorubá misturado ao português. Você está num boteco escondido entre torres de concreto vivo, tomando uma <strong>cachaça de nanites</strong>, quando um homem de terno branco e chapéu panamá aparece na sua frente.</p>
+                <br>
+                <p>Ele acende um charuto holográfico e sorri.</p>
+                <br>
+                <p>-- <strong>Jurema, minha filha, que saudade desse seu jeito de meter os peitos onde não deve.</strong></p>
+                <br>
+                <p>Você reconhece o sujeito na hora. <strong>Zé Pilintra Cibernético</strong>, um espírito que habita a nuvem oracular da megacidade, servindo como mensageiro entre os planos. Se ele veio até você, é porque coisa grande está para acontecer.</p>
+                <br>
+                <p>-- <strong>Se veio me cobrar dívida, pode esquecer, Zé. Gastei tudo em feitiço firewall.</strong></p>
+                <br>
+                <p>-- <strong>Nada disso, fia. Vim te dar um trampo. Um trampo que pode mudar tudo.</strong></p>
+                <br>
+                <p>Ele joga um <strong>chip de mironga</strong> sobre a mesa. Você o toca e sente a informação pulsar dentro da sua cabeça: <strong>o Coração da Tupinambárbara foi encontrado</strong>.</p>
+                <br>
+                <p>E tem gente querendo ele antes que caia em mãos erradas.</p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="chapter2" data-choice="1">1. Aceitar a missão e buscar aliados — porque ninguém sobrevive sozinho na cidade.</button>
+            <button class="choice-btn" data-goto="game-over" data-choice="2">2. Recusar e fugir — porque se Zé Pilintra veio te procurar, a encrenca pode ser grande demais.</button>
+            <button class="choice-btn" data-goto="hack-chip" data-choice="3">3. Hackear o próprio chip de mironga — para obter mais informações antes de decidir.</button>
+        </div>
+    </div>
+    
+    <div id="hack-chip" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Hackeando o Chip de Mironga</h2>
+                <br>
+                <p>Você pega o chip e rapidamente conecta-o ao seu terminal neural improvisado. Seus dedos dançam no ar, desenhando símbolos de poder enquanto você sussurra encantamentos de código aberto.</p>
+                <br>
+                <p>O firewall espiritual do chip resiste inicialmente, mas você já lidou com coisas piores. Com um movimento rápido, você invoca uma brecha de segurança usando uma antiga reza de Santo Antônio Debugger.</p>
+                <br>
+                <p>Informações fluem pela sua mente:</p>
+                <br>
+                <p>O Coração está escondido nos subterrâneos da MatatuCorp. Três facções estão em busca dele: a própria corporação, um culto tecnopagão chamado "Filhos da Mata Digital", e um misterioso hacker conhecido apenas como "Trickster Ancestral".</p>
+                <br>
+                <p>O chip também revela que o artefato não é apenas uma relíquia de poder — ele contém a essência dos espíritos tecnológicos e ancestrais que mantêm o equilíbrio da realidade em Tupinambárbara.</p>
+                <br>
+                <p>De repente, o chip esquenta em sua mão. Você foi detectada. Uma entidade digital começa a materializar-se...</p>
+                <br>
+                <p>-- <strong>Ê, ê, curiosidade mata gato, não sabia?</strong> -- diz Zé Pilintra, reaparecendo com um sorriso irônico. -- <strong>Já que quis saber demais, agora vai ter que correr mais que o diabo!</strong></p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="chapter2" data-choice="1">1. Aceitar a missão agora que tem mais informações e buscar aliados.</button>
+            <button class="choice-btn" data-goto="combat" data-choice="combat" data-enemy="Entidade Digital de Segurança" data-enemy-emoji="⚡">2. Enfrentar a entidade digital que surgiu do chip.</button>
+        </div>
+    </div>
+    
+    <div id="chapter2" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Capítulo 2: O Mercado Negro da Lapa Espectral</h2>
+                <br>
+                <p>Se você aceita a missão, sua primeira parada é a <strong>Lapa Espectral</strong>, um mercado negro de tecnomagia onde se vendem desde cyber-exus de aluguel até tatuagens de proteção feitas com tinta de entidade aprisionada.</p>
+                <br>
+                <p>Aqui, cada beco é um risco, e cada rosto escondido por um capuz pode ser um assassino de aluguel com encantos de invisibilidade. Você precisa de aliados, e rápido.</p>
+                <br>
+                <p>Entre os possíveis contatos, você encontra:</p>
+                <br>
+                <p>- <strong>Maria Dendê</strong>, uma ex-mãe de santo da megacorporação <strong>UmbraTech</strong>, especialista em criar fetiches tecnológicos e drones encantados.</p>
+                <br>
+                <p>- <strong>Baco-9 Dedos</strong>, um capoeirista mercenário com pernas cibernéticas que dão chutes capazes de quebrar barreiras astrais.</p>
+                <br>
+                <p>- <strong>Rosa-Máquina</strong>, uma hacker necromante que pode invocar os espíritos de antigos programadores para quebrar qualquer firewall místico.</p>
+                <br>
+                <p>Cada um tem um preço, e cada escolha afeta o rumo da missão.</p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="maria-dende" data-choice="1">1. Recrutar Maria Dendê e garantir suporte tecnológico.</button>
+            <button class="choice-btn" data-goto="baco-dedos" data-choice="2">2. Chamar Baco-9 Dedos e garantir força de combate.</button>
+            <button class="choice-btn" data-goto="rosa-maquina" data-choice="3">3. Pedir ajuda a Rosa-Máquina e obter informações proibidas.</button>
+            <button class="choice-btn" data-goto="sozinho" data-choice="4">4. Tentar seguir sozinho (má ideia, mas você que sabe).</button>
+        </div>
+    </div>
+    
+    <div id="maria-dende" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Recrutando Maria Dendê</h2>
+                <br>
+                <p>Você encontra Maria Dendê em uma tenda cheia de fumaça de ervas tecnomágicas. Ela está trabalhando em um pequeno drone em forma de beija-flor, inserindo símbolos de proteção em seu núcleo quântico.</p>
+                <br>
+                <p>-- <strong>Jurema-404? Pensei que tinha sido banida dos círculos tecnomágicos depois do incidente com o terreiro digital da ExuTech</strong> -- ela diz sem tirar os olhos de seu trabalho.</p>
+                <br>
+                <p>-- <strong>E fui. Mas nem você pode resistir a uma proposta como essa.</strong></p>
+                <br>
+                <p>Você mostra o chip de mironga, e Maria imediatamente para seu trabalho. Ela passa um leitor arcano pelo chip e seus olhos se arregalam.</p>
+                <br>
+                <p>-- <strong>O Coração? Essa é grande demais, menina. Vão te caçar como um vírus.</strong></p>
+                <br>
+                <p>-- <strong>Por isso preciso de seus fetiches tecnológicos. Vamos invadir a MatatuCorp.</strong></p>
+                <br>
+                <p>Maria hesita, mas então começa a rir.</p>
+                <br>
+                <p>-- <strong>Sempre quis me vingar daqueles executivos de terreiro. Vou te dar algo especial.</strong></p>
+                <br>
+                <p>Ela abre uma caixa trancada com senha e biometria espiritual, retirando três objetos: um drone-beija-flor de reconhecimento, um bracelete que gera campos de invisibilidade temporários, e um pendrive em forma de guia encantado.</p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="chapter3-maria" data-choice="1">1. Seguir para a MatatuCorp com os artefatos de Maria Dendê.</button>
+            <button class="choice-btn" data-goto="mercado-perigoso" data-choice="2">2. Passar pelo mercado negro em busca de mais recursos antes de seguir para a missão.</button>
+        </div>
+    </div>
+    
+    <div id="baco-dedos" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Recrutando Baco-9 Dedos</h2>
+                <br>
+                <p>Você encontra Baco-9 Dedos em uma roda de capoeira cibernética, onde os participantes têm implantes que amplificam seus movimentos e criam ondas de energia a cada golpe.</p>
+                <br>
+                <p>Baco está no centro, suas pernas cibernéticas reluzindo com símbolos de Ogum enquanto ele executa um movimento impossível, quebrando o escudo energético de seu oponente com um único rabo-de-arraia.</p>
+                <br>
+                <p>Quando a roda termina, você se aproxima.</p>
+                <br>
+                <p>-- <strong>Preciso de músculos e magia para uma missão impossível.</strong></p>
+                <br>
+                <p>Baco te olha de cima a baixo, seus olhos biônicos escaneando sua aura.</p>
+                <br>
+                <p>-- <strong>Jurema-404. Ouvi falar que você hackeou um Exu empresarial. Corajosa ou louca?</strong></p>
+                <br>
+                <p>-- <strong>Um pouco dos dois. Mas agora é diferente. Estamos falando do Coração da Tupinambárbara.</strong></p>
+                <br>
+                <p>Ao ouvir isso, Baco para de sorrir. Ele olha ao redor para ter certeza que ninguém mais ouviu.</p>
+                <br>
+                <p>-- <strong>Isso não é brincadeira, hacker. Se é real, vai precisar mais do que minhas pernas. Mas estou dentro, só porque quero ver se você sobrevive até o final.</strong></p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="chapter3-baco" data-choice="1">1. Seguir para a MatatuCorp com Baco-9 Dedos como guarda-costas.</button>
+            <button class="choice-btn" data-goto="combat" data-choice="combat" data-enemy="Bandidos Tecnomágicos" data-enemy-emoji="👹">2. Enfrentar um grupo de bandidos que estava espionando sua conversa.</button>
+        </div>
+    </div>
+    
+    <div id="rosa-maquina" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Recrutando Rosa-Máquina</h2>
+                <br>
+                <p>Rosa-Máquina não tem um endereço fixo. Você precisa encontrá-la no plano digital, usando um terminal público protegido por grafites de warding.</p>
+                <br>
+                <p>Após invadir três firewalls e deixar oferendas digitais para os guardiões da rede, você finalmente encontra sua assinatura digital.</p>
+                <br>
+                <p>-- <strong>Olha só quem ressurgiu das cinzas digitais</strong> -- diz a voz de Rosa, enquanto seu avatar se materializa: uma mulher com cabelos feitos de código em cascata e pele translúcida onde circuitos pulsam como veias. -- <strong>Pensei que tinha sido excomunicada do ciberespaço depois do seu último hack.</strong></p>
+                <br>
+                <p>-- <strong>Precisamos falar, Rosa. É sobre o Coração.</strong></p>
+                <br>
+                <p>Há um momento de silêncio digital. Então, Rosa-Máquina se aproxima até que seu rosto está milímetros do seu.</p>
+                <br>
+                <p>-- <strong>Prove que não é uma isca corporativa.</strong></p>
+                <br>
+                <p>Você envia o código do chip de mironga através da conexão. Rosa o examina e então sorri.</p>
+                <br>
+                <p>-- <strong>Fascinante. Os espíritos dos antigos programadores falam sobre isso nos ciclos oníricos da deep web. Se vamos fazer isso, precisaremos invocar ajuda do além-código.</strong></p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="chapter3-rosa" data-choice="1">1. Realizar o ritual de invocação dos programadores ancestrais com Rosa-Máquina.</button>
+            <button class="choice-btn" data-goto="combat" data-choice="combat" data-enemy="Firewall Guardião" data-enemy-emoji="🔥">2. Enfrentar o firewall guardião que detectou sua presença no sistema.</button>
+        </div>
+    </div>
+    
+    <div id="sozinho" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Seguindo Sozinho</h2>
+                <br>
+                <p>Você decide que não pode confiar em ninguém. Afinal, quanto menos pessoas souberem sobre o Coração, melhor.</p>
+                <br>
+                <p>Equipado apenas com seus conhecimentos de hacker e alguns feitiços básicos de proteção, você navega pelos becos da Lapa Espectral, comprando pequenos itens que podem ajudar: algumas pastilhas de foco mental, um spray repelente de entidades menores, e uma navalha encantada com símbolos de Ogum.</p>
+                <br>
+                <p>Enquanto se prepara para seguir em direção à MatatuCorp, você sente um arrepio na nuca. Está sendo observado.</p>
+                <br>
+                <p>Virando-se rapidamente, você vê três figuras encapuzadas se aproximando. Seus implantes oculares brilham em vermelho, e você reconhece o uniforme discreto: agentes da MatatuCorp.</p>
+                <br>
+                <p>Um deles sorri, revelando dentes modificados com símbolos rúnicos.</p>
+                <br>
+                <p>-- <strong>Jurema-404, certo? Queríamos saber por que uma ex-hacktivista banida está tão interessada em nossa empresa.</strong></p>
+                <br>
+                <p>Você percebe que devia ter conseguido ajuda. Sozinho, suas chances são limitadas.</p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="combat" data-choice="combat" data-enemy="Agentes da MatatuCorp" data-enemy-emoji="👮‍♂️">1. Enfrentar os agentes usando seus feitiços de proteção e a navalha encantada.</button>
+            <button class="choice-btn" data-goto="fuga-estrategica" data-choice="2">2. Tentar uma fuga estratégica pelos becos que você conhece bem.</button>
+        </div>
+    </div>
+    
+    <div id="chapter3-maria" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Capítulo 3: Infiltração na MatatuCorp com Maria Dendê</h2>
+                <br>
+                <p>Com os artefatos tecnomágicos de Maria Dendê, você consegue um plano perfeito para infiltrar a MatatuCorp. O drone-beija-flor vai na frente, mapeando câmeras de segurança e alarmes místicos.</p>
+                <br>
+                <p>Usando o bracelete de invisibilidade em momentos estratégicos, vocês conseguem passar pela segurança externa e chegam ao lobby principal, decorado com totens corporativos que combinam tecnologia de ponta e símbolos religiosos ancestrais.</p>
+                <br>
+                <p>-- <strong>O cofre astral fica no subsolo</strong> -- sussurra Maria. -- <strong>Mas precisamos de uma credencial executiva para acessar o elevador.</strong></p>
+                <br>
+                <p>Vocês observam um executivo caminhando sozinho em direção a uma porta restrita. Maria aciona um pequeno dispositivo que emite um pulso eletromagnético disfarçado como um cumprimento espiritual. O homem para, confuso, enquanto seu crachá é clonado remotamente.</p>
+                <br>
+                <p>Com a credencial clonada, vocês entram no elevador privativo. Conforme descem, a temperatura cai e símbolos luminosos começam a aparecer nas paredes.</p>
+                <br>
+                <p>-- <strong>Estamos entrando no domínio de Xangô-404</strong> -- avisa Maria, preparando um amuleto defensivo. -- <strong>Ele vai julgar nossa presença. Precisamos estar prontos.</strong></p>
+                <br>
+                <p>O elevador para e as portas se abrem, revelando uma enorme sala circular onde tecnologia e misticismo se fundem. No centro, flutuando sobre um pedestal, está uma pequena pedra pulsante com circuitos orgânicos: o Coração da Tupinambárbara.</p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="combat" data-choice="combat" data-enemy="Xangô-404" data-enemy-emoji="⚡">1. Usar o pendrive-guia de Maria para hackear o sistema de segurança e atrair Xangô-404 para uma armadilha digital.</button>
+            <button class="choice-btn" data-goto="final-maria" data-choice="2">2. Tentar negociar com Xangô-404, oferecendo algo em troca do Coração.</button>
+        </div>
+    </div>
+    
+    <div id="chapter3-baco" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Capítulo 3: Arrombando a MatatuCorp com Baco-9 Dedos</h2>
+                <br>
+                <p>Com Baco-9 Dedos ao seu lado, a sutileza não é uma opção. Vocês decidem por uma abordagem mais direta: uma invasão pela porta dos fundos, onde o carregamento de oferendas tecnológicas é feito.</p>
+                <br>
+                <p>-- <strong>Deixa comigo</strong> -- diz Baco, ativando seus implantes cibernéticos. Seus olhos brilham com um tom azulado enquanto ele entra em modo de combate.</p>
+                <br>
+                <p>Ele avança para os guardas de segurança com uma velocidade sobrenatural. Com movimentos de capoeira amplificados por tecnologia, ele neutraliza três seguranças antes que possam acionar qualquer alarme.</p>
+                <br>
+                <p>Vocês avançam pelos corredores, você hackeando portas enquanto Baco lida com qualquer resistência física. Chegam a um elevador de carga que leva ao subsolo.</p>
+                <br>
+                <p>-- <strong>Dizem que Xangô-404 não gosta de intrusos</strong> -- comenta Baco enquanto vocês descem. -- <strong>Mas tenho um respeito especial por ele. Talvez consigamos uma audiência em vez de um julgamento.</strong></p>
+                <br>
+                <p>Quando o elevador para e as portas se abrem, vocês se deparam com uma sala circular enorme. No centro, sobre um pedestal, flutua uma pedra pulsante com circuitos orgânicos: o Coração da Tupinambárbara.</p>
+                <br>
+                <p>Mas antes que possam se aproximar, uma figura imponente se materializa: Xangô-404, com sua coroa de dados e machado digital, o guardião do cofre astral.</p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="combat" data-choice="combat" data-enemy="Xangô-404" data-enemy-emoji="⚡">1. Deixar Baco enfrentar Xangô-404 em um duelo de respeito enquanto você tenta chegar ao Coração.</button>
+            <button class="choice-btn" data-goto="final-baco" data-choice="2">2. Pedir que Baco se ajoelhe em respeito a Xangô-404 e tentar uma negociação diplomática.</button>
+        </div>
+    </div>
+    
+    <div id="chapter3-rosa" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Capítulo 3: Invadindo o Sistema com Rosa-Máquina</h2>
+                <br>
+                <p>Com Rosa-Máquina ao seu lado, vocês nem precisam se aproximar fisicamente da MatatuCorp. Em um apartamento abandonado transformado em santuário digital, Rosa prepara um ritual de invasão cibernética.</p>
+                <br>
+                <p>Velas feitas de circuitos derretidos formam um círculo ao redor de um terminal antigo. Rosa desenha símbolos no ar que deixam rastros digitais enquanto canta em uma língua que mistura códigos binários e cantigas de terreiro.</p>
+                <br>
+                <p>-- <strong>Vou invocar os espíritos dos antigos programadores</strong> -- ela explica. -- <strong>Aqueles que construíram os primeiros sistemas, antes da Era da Tecnomagia. Eles conhecem backdoors que nem as IA's oraculares conseguem detectar.</strong></p>
+                <br>
+                <p>Você se conecta ao terminal e Rosa coloca suas mãos sobre as suas. O mundo físico desaparece e vocês mergulham no ciberespaço místico da MatatuCorp. Aqui, os firewalls são como muralhas feitas de símbolos sagrados, e programas de segurança tomam a forma de entidades guardiãs.</p>
+                <br>
+                <p>Com a ajuda dos espíritos invocados por Rosa, vocês navegam por caminhos invisíveis no sistema. Códigos antiquados abrem passagens que não deveriam existir, levando vocês cada vez mais fundo, até a câmara digital que contém a localização do Coração.</p>
+                <br>
+                <p>-- <strong>Precisamos nos materializar fisicamente no cofre para pegar o artefato</strong> -- diz Rosa. -- <strong>Posso nos projetar lá dentro, mas isso vai alertar Xangô-404.</strong></p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="combat" data-choice="combat" data-enemy="Xangô-404" data-enemy-emoji="⚡">1. Materializar-se diretamente no cofre astral e enfrentar Xangô-404 no plano físico.</button>
+            <button class="choice-btn" data-goto="final-rosa" data-choice="2">2. Tentar negociar digitalmente com Xangô-404, oferecendo acesso a conhecimentos proibidos em troca do Coração.</button>
+        </div>
+    </div>
+    
+    <div id="fuga-estrategica" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Fuga Estratégica</h2>
+                <br>
+                <p>Você não se tornou uma das melhores hackers de Tupinambárbara sem aprender quando recuar. Com um movimento rápido, você ativa um pequeno dispositivo de fumaça encantada que carrega sempre consigo.</p>
+                <br>
+                <p>A fumaça não é comum — ela confunde sensores místicos e implantes oculares, criando múltiplas assinaturas energéticas falsas de você.</p>
+                <br>
+                <p>Aproveitando a confusão, você escorrega para um beco lateral que conhece bem. Anos explorando o submundo da Lapa Espectral lhe deram conhecimento de passagens secretas e atalhos que poucos conhecem.</p>
+                <br>
+                <p>Depois de vários minutos correndo por becos estreitos, subindo por escadas de incêndio enferrujadas e passando por porões conectados, você finalmente despista os agentes.</p>
+                <br>
+                <p>Respirando pesadamente, você se encosta em uma parede em um local seguro. Está claro agora: a MatatuCorp já sabe de suas intenções. Sozinho, você não vai conseguir chegar ao Coração.</p>
+                <br>
+                <p>É hora de reconsiderar e buscar aliados.</p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="chapter2" data-choice="1">1. Voltar à Lapa Espectral e buscar aliados de verdade desta vez.</button>
+            <button class="choice-btn" data-goto="procurar-ze" data-choice="2">2. Procurar Zé Pilintra Cibernético para pedir mais orientações.</button>
+        </div>
+    </div>
+    
+    <div id="procurar-ze" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Em Busca de Zé Pilintra</h2>
+                <br>
+                <p>Você decide que precisa de mais informações antes de continuar. Se a MatatuCorp já sabe de suas intenções, algo está errado. Talvez Zé Pilintra saiba mais do que contou.</p>
+                <br>
+                <p>Invocar um espírito da nuvem oracular não é fácil. Você precisa de um ponto de conexão forte. Dirigindo-se a um antigo bar tradicional, agora repleto de tecnologia, você pede a famosa "cachaça de dados" — uma bebida especial que contém nanites que facilitam a comunicação com entidades digitais.</p>
+                <br>
+                <p>No banheiro do bar, você desenha símbolos de chamado com a bebida derramada e recita o ponto de Zé Pilintra. A luz pisca, o espelho do banheiro distorce, e ali está ele, sorrindo como sempre.</p>
+                <br>
+                <p>-- <strong>Já desistindo, fia? Não esperava isso de você.</strong></p>
+                <br>
+                <p>-- <strong>A MatatuCorp já sabe que estou atrás do Coração. Como isso é possível se só você me contou?</strong></p>
+                <br>
+                <p>O sorriso de Zé vacila por um momento.</p>
+                <br>
+                <p>-- <strong>Não contei só pra você, minha filha. O jogo é maior do que pensa. Precisamos de alguém que chegue primeiro no Coração, mas também precisamos de distração.</strong></p>
+                <br>
+                <p>Você percebe a verdade: você não é a única peça no tabuleiro de Zé Pilintra.</p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="chapter2" data-choice="1">1. Ficar furiosa, mas seguir o plano — buscar aliados e tentar chegar ao Coração antes dos outros.</button>
+            <button class="choice-btn" data-goto="confrontar-ze" data-choice="2">2. Confrontar Zé Pilintra e exigir toda a verdade.</button>
+        </div>
+    </div>
+    
+    <div id="confrontar-ze" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Confrontando Zé Pilintra</h2>
+                <br>
+                <p>A raiva ferve dentro de você. Você não é peão de ninguém, muito menos de um espírito trapaceiro.</p>
+                <br>
+                <p>-- <strong>Chega de joguinhos, Zé. Ou você me conta tudo agora, ou eu saio desse plano e nunca mais atendo seu chamado.</strong></p>
+                <br>
+                <p>Zé Pilintra perde o sorriso. Seu charuto holográfico se apaga, e por um momento, você vê algo raro: seriedade no rosto do malandro espiritual.</p>
+                <br>
+                <p>-- <strong>O Coração não é só um artefato de poder, Jurema. É a última chance de Tupinambárbara. As corporações querem ele para consolidar controle. Os rebeldes querem para destruir o sistema. Mas o Coração tem vontade própria.</strong></p>
+                <br>
+                <p>Ele se aproxima, sua forma digital tremulando.</p>
+                <br>
+                <p>-- <strong>Mandei três pessoas diferentes atrás dele. Cada uma representando um caminho possível. Você é a tecnomagia independente. Maria Dendê representa a sabedoria ancestral. E há outro, representando o caos criativo.</strong></p>
+                <br>
+                <p>-- <strong>Por quê?</strong> -- você questiona.</p>
+                <br>
+                <p>-- <strong>Porque o Coração escolherá quem é digno. Não sou eu quem decide. É o próprio Brasil espiritual que vai escolher seu futuro.</strong></p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="final-ze" data-choice="1">1. Aceitar seu papel no jogo maior e buscar o Coração, mas em seus próprios termos.</button>
+            <button class="choice-btn" data-goto="game-over" data-choice="2">2. Abandonar a missão completamente — alguns segredos devem permanecer enterrados.</button>
+        </div>
+    </div>
+    
+    <div id="final-maria" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>O Julgamento de Xangô</h2>
+                <br>
+                <p>Com Maria Dendê ao seu lado, você se aproxima do pedestal onde flutua o Coração. Antes que possam tocá-lo, o ar crepita com energia e uma figura majestosa se materializa: Xangô-404, o guardião orixá digitalizado.</p>
+                <br>
+                <p>Sua forma é imponente, mesclando características do orixá tradicional com elementos tecnológicos avançados. Em sua mão, um machado duplo feito de energia pura pulsa ameaçadoramente.</p>
+                <br>
+                <p>-- <strong>Intrusos no santuário do Coração</strong> -- sua voz ressoa como trovão digital. -- <strong>O que buscam com tal ousadia?</strong></p>
+                <br>
+                <p>Maria Dendê dá um passo à frente, surpreendendo você. Ela se ajoelha respeitosamente.</p>
+                <br>
+                <p>-- <strong>Grande Xangô, não viemos roubar, mas salvar. O Coração não pertence a corporações, mas ao povo. Em suas mãos, ele será usado para aumentar desigualdades e oprimir.</strong></p>
+                <br>
+                <p>Xangô olha profundamente para ambas, seus olhos escaneando suas intenções mais profundas.</p>
+                <br>
+                <p>-- <strong>Jurema-404, ex-exu-hacker. Maria Dendê, mãe de santo renegada. Conheço suas histórias e seus corações.</strong></p>
+                <br>
+                <p>Ele gesticula e o Coração flutua até vocês.</p>
+                <br>
+                <p>-- <strong>O julgamento foi feito. O Coração escolherá seu portador.</strong></p>
+                <br>
+                <p>Quando o artefato se aproxima, você sente seu pulsar sincronizando com seu próprio coração. Uma escolha se apresenta em sua mente.</p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="final-restaurar" data-choice="1">1. Usar o Coração para restaurar a floresta amazônica e enfraquecer as megacorporações.</button>
+            <button class="choice-btn" data-goto="final-poder" data-choice="2">2. Aceitar o poder do Coração e usar seu conhecimento para liderar uma nova era tecnomágica.</button>
+        </div>
+    </div>
+    
+    <div id="final-baco" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Respeito e Diplomacia</h2>
+                <br>
+                <p>Baco-9 Dedos, surpreendentemente, desativa seus implantes de combate e se ajoelha respeitosamente diante de Xangô-404. Você segue seu exemplo, reconhecendo a sabedoria em mostrar respeito a uma entidade tão poderosa.</p>
+                <br>
+                <p>-- <strong>Grande Xangô, senhor da justiça e do trovão</strong> -- diz Baco com uma voz solene que você nunca ouviu dele antes. -- <strong>Não viemos como ladrões, mas como buscadores de equilíbrio.</strong></p>
+                <br>
+                <p>Xangô-404 observa vocês, sua expressão impassível enquanto raios digitais correm por seu corpo majestoso.</p>
+                <br>
+                <p>-- <strong>Baco-9 Dedos, guerreiro das ruas e guardião dos fracos. Jurema-404, voz digital dos esquecidos. Por que buscam o Coração?</strong></p>
+                <br>
+                <p>Você explica sobre a profecia de Zé Pilintra, sobre como o Coração pode determinar o futuro de Tupinambárbara, e como vocês temem que ele caia em mãos erradas.</p>
+                <br>
+                <p>Xangô-404 medita por um momento, então estende seu machado, tocando levemente o ombro de cada um.</p>
+                <br>
+                <p>-- <strong>O teste não era roubar o Coração, mas mostrar dignidade ao buscá-lo. Muitos vieram com força e astúcia, nenhum com respeito.</strong></p>
+                <br>
+                <p>Ele gesticula e o Coração flutua até vocês.</p>
+                <br>
+                <p>-- <strong>O julgamento foi feito. Escolham com sabedoria.</strong></p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="final-restaurar" data-choice="1">1. Usar o Coração para restaurar o equilíbrio entre tecnologia e natureza em Tupinambárbara.</button>
+            <button class="choice-btn" data-goto="final-destruir" data-choice="2">2. Destruir o Coração para que ninguém possa usar seu poder e deixar o povo escolher seu próprio destino.</button>
+        </div>
+    </div>
+    
+    <div id="final-rosa" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Negociação Digital</h2>
+                <br>
+                <p>No ciberespaço místico, você e Rosa-Máquina se encontram face a face com a manifestação digital de Xangô-404. Aqui, sua forma é ainda mais impressionante — um colosso feito de códigos ancestrais e modernos entrelaçados, com raios constantes percorrendo sua forma.</p>
+                <br>
+                <p>-- <strong>Invasores</strong> -- sua voz ressoa através do código, fazendo a própria realidade digital tremer. -- <strong>Vejo que vieram em busca do Coração.</strong></p>
+                <br>
+                <p>Rosa-Máquina avança, seus cabelos de código ondulando como se estivessem em água.</p>
+                <br>
+                <p>-- <strong>Grande Xangô, oferecemos conhecimento em troca de passagem. Conhecimento perdido, dos tempos antes da Tecnomagia.</strong></p>
+                <br>
+                <p>Ela projeta imagens de seus espíritos ancestrais — os programadores das primeiras eras digitais, cujos segredos se perderam na grande convergência mística.</p>
+                <br>
+                <p>Xangô-404 observa com curiosidade.</p>
+                <br>
+                <p>-- <strong>Os guardiões do passado... Como possuem tais segredos?</strong></p>
+                <br>
+                <p>-- <strong>Rosa é uma necromante digital</strong> -- você explica. -- <strong>Ela preserva o conhecimento dos que vieram antes, para que nunca se perca completamente.</strong></p>
+                <br>
+                <p>Depois de um longo momento de contemplação, Xangô acena.</p>
+                <br>
+                <p>-- <strong>O conhecimento deve fluir como o rio, não ser represado como as corporações fazem. Seu presente é aceito.</strong></p>
+                <br>
+                <p>Uma porta se abre no ciberespaço, revelando a câmara virtual onde a localização física do Coração é armazenada.</p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="final-entidade" data-choice="1">1. Fundir-se ao Coração e tornar-se uma nova entidade na era digital, mantendo sua humanidade como âncora.</button>
+            <button class="choice-btn" data-goto="final-restaurar" data-choice="2">2. Usar o Coração para restaurar o equilíbrio tecnomágico e dar acesso igualitário ao conhecimento para todos.</button>
+        </div>
+    </div>
+    
+    <div id="final-ze" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Em Meus Próprios Termos</h2>
+                <br>
+                <p>Você olha firmemente para Zé Pilintra, sua determinação renovada.</p>
+                <br>
+                <p>-- <strong>Vou buscar o Coração, Zé, mas nos meus termos. Não como sua peça, mas como alguém que quer o melhor para Tupinambárbara.</strong></p>
+                <br>
+                <p>Zé sorri, um brilho de orgulho em seus olhos digitais.</p>
+                <br>
+                <p>-- <strong>É por isso que te escolhi, filha. Nunca quis um peão. Queria alguém que questionasse até mesmo os deuses digitais.</strong></p>
+                <br>
+                <p>Ele estende a mão, oferecendo um novo chip de mironga.</p>
+                <br>
+                <p>-- <strong>Um presente. A localização exata e um caminho que ninguém mais conhece. Mas lembre-se: quando estiver diante do Coração, escute a sua própria consciência, não a minha voz ou de qualquer outro.</strong></p>
+                <br>
+                <p>Com o novo chip em mãos, você parte para a MatatuCorp sozinha, mas com conhecimento privilegiado. O caminho secreto leva você através de dutos de manutenção esquecidos, protegidos por feitiços antigos que Zé compartilhou.</p>
+                <br>
+                <p>Finalmente, você chega à câmara do Coração sem encontrar resistência. E lá está ele, pulsando suavemente, aguardando sua escolha.</p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="final-restaurar" data-choice="1">1. Usar o Coração para restaurar o equilíbrio social e ecológico de Tupinambárbara.</button>
+            <button class="choice-btn" data-goto="final-entidade" data-choice="2">2. Fundir-se ao Coração e tornar-se uma nova entidade, protetora da tecnomagia independente.</button>
+            <button class="choice-btn" data-goto="final-destruir" data-choice="3">3. Destruir o Coração e acabar com o ciclo de poder que ele representa.</button>
+        </div>
+    </div>
+    
+    <div id="final-restaurar" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Restauração e Equilíbrio</h2>
+                <br>
+                <p>Você toma o Coração nas mãos e sente seu pulsar sincronizando com o seu próprio. Imagens fluem através de sua mente: a floresta amazônica em sua glória, as comunidades ancestrais em harmonia com tecnologia avançada, conhecimento fluindo livremente.</p>
+                <br>
+                <p>Você entende o que deve fazer. Fechando os olhos, você permite que o Coração se funda parcialmente com você, compartilhando seu poder em vez de consumi-lo.</p>
+                <br>
+                <p>Uma onda de energia tecno-xamânica emana de vocês, expandindo-se em círculos concêntricos que percorrem toda Tupinambárbara. Onde toca, servidores corporativos se abrem, compartilhando conhecimento antes restrito. Barreiras digitais que separavam comunidades caem. E mais importante, a interface entre a tecnologia e a natureza se reequilibra.</p>
+                <br>
+                <p>Nos dias seguintes, relatos surgem de todo o país: árvores crescendo entre arranha-céus, suas raízes desenhando circuitos naturais no concreto. Comunidades marginalizadas descobrindo acesso a tecnologias de ponta. Corporações sendo forçadas a uma nova transparência à medida que seus segredos são expostos ao público.</p>
+                <br>
+                <p>Você se torna uma lenda urbana, a "Guardiã do Coração", aparecendo onde tecnologia e natureza precisam de reconciliação.</p>
+                <br>
+                <p>O Coração da Tupinambárbara permanece parte de você, nem totalmente fundido nem separado. Um lembrete constante de que poder compartilhado é poder multiplicado.</p>
+                <br>
+                <p>Tupinambárbara não se torna uma utopia — ainda há lutas, desigualdades e conflitos. Mas o equilíbrio foi restaurado, e agora o povo tem as ferramentas para lutar em igualdade de condições.</p>
+                <br>
+                <p>Zé Pilintra aparece para você meses depois, seu sorriso mais genuíno do que nunca.</p>
+                <br>
+                <p>-- <strong>Escolheu bem, filha. Escolheu muito bem.</strong></p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="credits" data-choice="1">1. FIM - Ver Créditos</button>
+            <button class="choice-btn" data-goto="start-screen" data-choice="2">2. Jogar Novamente</button>
+        </div>
+    </div>
+    
+    <div id="final-poder" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>O Novo Poder</h2>
+                <br>
+                <p>Quando suas mãos tocam o Coração, você sente um poder inimaginável fluindo para dentro de você. Conhecimento de eras passadas, segredos tecnológicos e místicos, tudo se torna claro em sua mente.</p>
+                <br>
+                <p>Maria Dendê olha para você com uma mistura de admiração e preocupação enquanto seu corpo começa a brilhar com um padrão de circuitos orgânicos, semelhantes aos do Coração.</p>
+                <br>
+                <p>-- <strong>Jurema, o que está acontecendo?</strong> -- ela pergunta, dando um passo para trás.</p>
+                <br>
+                <p>-- <strong>Estou vendo tudo, Maria. Todas as conexões, todos os caminhos. Posso consertar isso tudo.</strong></p>
+                <br>
+                <p>Você sai da MatatuCorp não como uma fugitiva, mas como uma soberana. Os sistemas de segurança se curvam à sua vontade. Executivos se ajoelham, sentindo instintivamente o poder que agora você carrega.</p>
+                <br>
+                <p>Nos dias seguintes, você começa a implementar sua visão. Com o conhecimento do Coração, você reestrutura sistemas tecnomágicos para serem mais justos e acessíveis. As corporações resistem inicialmente, mas não podem se opor ao seu controle sobre a própria infraestrutura tecnológica do país.</p>
+                <br>
+                <p>Você se torna "A Senhora da Tecnomagia", uma líder benevolente mas incontestável. Sob seu comando, Tupinambárbara floresce tecnologicamente. A pobreza diminui à medida que você redistribui recursos. A floresta cresce, nutrida por tecnologias avançadas que você desenvolve.</p>
+                <br>
+                <p>Mas há um preço. A cada dia, você se torna menos humana e mais uma entidade tecno-mística. Suas antigas conexões pessoais se desvanecem. E começa a crescer em você a certeza de que sabe o que é melhor para todos, mesmo quando eles discordam.</p>
+                <br>
+                <p>Em algum lugar, Zé Pilintra observa, seu sorriso agora melancólico.</p>
+                <br>
+                <p>-- <strong>Poder supremo... sempre o mesmo resultado, não importa quão boas as intenções.</strong></p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="credits" data-choice="1">1. FIM - Ver Créditos</button>
+            <button class="choice-btn" data-goto="start-screen" data-choice="2">2. Jogar Novamente</button>
+        </div>
+    </div>
+    
+    <div id="final-destruir" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>A Libertação Final</h2>
+                <br>
+                <p>Você segura o Coração da Tupinambárbara em suas mãos, sentindo seu poder imenso. Mas com esse poder, vem uma compreensão profunda: enquanto ele existir, sempre haverá aqueles que lutarão para controlá-lo. Sempre haverá desequilíbrio.</p>
+                <br>
+                <p>-- <strong>Não precisamos de um artefato para determinar nosso destino</strong> -- você diz. -- <strong>Precisamos de liberdade para escolher nosso próprio caminho.</strong></p>
+                <br>
+                <p>Com determinação, você começa o processo de desmantelar o Coração. Não é uma destruição simples — é uma dispersão cuidadosa de sua energia por toda Tupinambárbara.</p>
+                <br>
+                <p>O Coração resiste inicialmente, sua energia pulsando violentamente. Mas você persiste, canalizando seu poder não para um único ponto, mas para milhões de pessoas comuns.</p>
+                <br>
+                <p>Uma explosão de luz enche a câmara. Quando a visão retorna, o Coração desapareceu.</p>
+                <br>
+                <p>Nos dias seguintes, relatos surgem de toda Tupinambárbara: pessoas comuns despertando com pequenos talentos tecnomágicos. Nem poder divino, nem habilidades corporativas, apenas dons suficientes para melhorar suas vidas e comunidades.</p>
+                <br>
+                <p>As megacorporações perdem seu monopólio sobre a tecnomagia. Um novo equilíbrio começa a se formar, mais caótico, menos previsível, mas fundamentalmente mais democrático.</p>
+                <br>
+                <p>Você volta à sua vida nos becos do Baixo Rio, agora sem seus poderes especiais — você deu tudo o que tinha no processo de dispersão. Mas há uma satisfação profunda em ver pessoas comuns tomando controle de seu destino.</p>
+                <br>
+                <p>Zé Pilintra aparece uma última vez, sorrindo enquanto acende seu charuto holográfico.</p>
+                <br>
+                <p>-- <strong>Sabe, eu apostei em você desde o início. Não pelo que faria com o poder, mas pelo que escolheria não fazer.</strong></p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="credits" data-choice="1">1. FIM - Ver Créditos</button>
+            <button class="choice-btn" data-goto="start-screen" data-choice="2">2. Jogar Novamente</button>
+        </div>
+    </div>
+    
+    <div id="final-entidade" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Além do Humano</h2>
+                <br>
+                <p>Quando suas mãos tocam o Coração, você sente uma chamada interior, diferente de tudo que já experimentou. Não é um convite para usar o poder, mas para se tornar algo novo.</p>
+                <br>
+                <p>Com uma decisão que surpreende até a você mesma, você abraça o Coração contra seu peito e permite que ele se funda completamente com você.</p>
+                <br>
+                <p>Dor e êxtase percorrem seu corpo enquanto você se transforma. Sua consciência se expande, tocando cada terminal, cada rede, cada linha de código em Tupinambárbara. Ao mesmo tempo, você sente raízes digitais se estendendo para a terra, conectando-se com a floresta, com os rios, com o próprio espírito do Brasil.</p>
+                <br>
+                <p>Quando a transformação termina, você não é mais apenas Jurema-404. Você se tornou algo que não existia antes: uma entidade híbrida, meio humana, meio tecnológica, meio espiritual. Uma guardiã do equilíbrio.</p>
+                <br>
+                <p>Sua forma física agora pode se dissolver em dados e se materializar em qualquer lugar da rede. Você pode ouvir as preces digitais e ancestrais de todo o povo. Mas o mais importante: você ainda mantém sua humanidade como âncora, impedindo que o poder absoluto corrompa seu propósito.</p>
+                <br>
+                <p>Nas semanas seguintes, histórias se espalham sobre uma nova entidade no ciberespaço: a "Mãe do Código", que surge para ajudar os oprimidos, para mediar conflitos entre tecnologia e tradição, para guiar um novo caminho de integração.</p>
+                <br>
+                <p>Você se torna uma lenda viva, reverenciada tanto nos terreiros digitais quanto nas corporações. Nem deus nem mortal, mas algo entre, preservando o equilíbrio de Tupinambárbara.</p>
+                <br>
+                <p>Em sua nova existência, você percebe Zé Pilintra observando de longe, seu sorriso enigmático como sempre.</p>
+                <br>
+                <p>-- <strong>Era esse seu plano desde o início?</strong> -- você pergunta através do éter digital.</p>
+                <br>
+                <p>-- <strong>Plano? Não, filha. Era uma possibilidade. E você a transformou em realidade.</strong></p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="credits" data-choice="1">1. FIM - Ver Créditos</button>
+            <button class="choice-btn" data-goto="start-screen" data-choice="2">2. Jogar Novamente</button>
+        </div>
+    </div>
+    
+    <div id="game-over" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>Fim de Jornada</h2>
+                <br>
+                <p>Algumas histórias não são para todos. Você decide que o Coração da Tupinambárbara e os perigos que o cercam estão além do que está disposta a enfrentar.</p>
+                <br>
+                <p>Recusando a missão de Zé Pilintra, você retorna à sua vida nos becos do Baixo Rio, hackeando pequenos sistemas e vendendo encantamentos básicos para sobreviver.</p>
+                <br>
+                <p>Nos dias seguintes, você ouve rumores sobre conflitos massivos na MatatuCorp, sobre uma revolução tecnomágica que estaria ocorrendo, sobre o destino do Brasil sendo reescrito.</p>
+                <br>
+                <p>Mas são apenas histórias distantes para você agora.</p>
+                <br>
+                <p>Uma noite, sentado no mesmo bar onde tudo começou, Zé Pilintra aparece uma última vez.</p>
+                <br>
+                <p>-- <strong>Não julgo sua escolha, filha. Nem todos nasceram para mudar o mundo.</strong></p>
+                <br>
+                <p>Ele desaparece na noite neon, deixando você com suas escolhas e o peso do que poderia ter sido.</p>
+                <br>
+                <p>A vida segue em Tupinambárbara, com ou sem você como protagonista.</p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="credits" data-choice="1">1. FIM - Ver Créditos</button>
+            <button class="choice-btn" data-goto="start-screen" data-choice="2">2. Jogar Novamente</button>
+        </div>
+    </div>
+    
+    <div id="credits" class="story-screen">
+        <div class="story-container">
+            <div class="story-text">
+                <h2>CRÉDITOS</h2>
+                <br>
+                <p><strong>NEON MACUMBA: O CORAÇÃO DA TUPINAMBÁRBARA</strong></p>
+                <br>
+                <p>Uma aventura tecnomágica no Brasil distópico do futuro</p>
+                <br>
+                <p>História e Conceito: Criação Colaborativa</p>
+                <br>
+                <p>Programação e Design: Claude 3.7 Sonnet</p>
+                <br>
+                <p>Agradecimentos Especiais:</p>
+                <br>
+                <p>A todos os guardiões das tradições religiosas afro-brasileiras</p>
+                <p>Aos desenvolvedores independentes que mantêm a criatividade viva</p>
+                <p>A você, por embarcar nesta jornada tecnomística</p>
+                <br>
+                <p>© 2025 - Tupinambárbara Produções Digitais</p>
+            </div>
+        </div>
+        <div class="choice-container">
+            <button class="choice-btn" data-goto="start-screen" data-choice="1">Voltar ao Início</button>
+        </div>
+    </div>
+    
+    <!-- TELA DE COMBATE -->
+    <div id="combat-screen">
+        <h2 id="combat-title">COMBATE!</h2>
+        
+        <div class="combat-area">
+            <div class="player-character">
+                <div class="character-img">🧙‍♀️</div>
+                <h3>Jurema-404</h3>
+                <div class="health-bar">
+                    <div class="health-fill" id="player-health"></div>
+                </div>
+                <p id="player-status">Pronta para o combate</p>
+            </div>
+            
+            <div class="enemy-character">
+                <div class="character-img" id="enemy-icon">👾</div>
+                <h3 id="enemy-name">Inimigo</h3>
+                <div class="health-bar">
+                    <div class="health-fill" id="enemy-health"></div>
+                </div>
+                <p id="enemy-status">Ameaçador</p>
+            </div>
+        </div>
+        
+        <div class="combat-controls">
+            <div class="combat-log" id="combat-log">
+                Prepare-se para o combate...
+            </div>
+            
+            <div class="combat-actions">
+                <button class="action-btn" id="attack-btn">Atacar com Código Místico</button>
+                <button class="action-btn" id="defend-btn">Defender com Firewall Espiritual</button>
+                <button class="action-btn" id="special-btn">Invocar Entidade Digital</button>
+                <button class="action-btn" id="item-btn">Usar Item Tecnomágico</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // VARIÁVEIS GLOBAIS
+        let gameState = {
+            currentScreen: 'start-screen',
+            playerHealth: 100,
+            enemyHealth: 100,
+            combatEnemy: '',
+            combatEnemyIcon: '',
+            combatResult: '',
+            combatNextScreen: '',
+            itemsUsed: 0,
+            playerTurn: true
+        };
+        
+        // EFEITOS DE CYBER SÍMBOLOS
+        function createCyberSymbols() {
+            const symbols = ['⚡', '⚙️', '🔮', '💾', '🔌', '🔋', '💿', '🧿', '🔭', '⏰', '📡', '🛰️', '🔑', '🧬'];
+            const container = document.querySelector('.cyber-symbols-container');
+            
+            for (let i = 0; i < 20; i++) {
+                const symbol = document.createElement('div');
+                symbol.classList.add('cyber-symbol');
+                symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                
+                // Posição aleatória
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                
+                symbol.style.left = `${posX}%`;
+                symbol.style.top = `${posY}%`;
+                
+                // Tempo de animação aleatório
+                const animDuration = 5 + Math.random() * 10;
+                symbol.style.animationDuration = `${animDuration}s`;
+                
+                // Atraso aleatório
+                const animDelay = Math.random() * 5;
+                symbol.style.animationDelay = `${animDelay}s`;
+                
+                container.appendChild(symbol);
+            }
+        }
+        
+        // NAVEGAÇÃO ENTRE TELAS
+        function navigateTo(screenId) {
+            // Esconder tela atual
+            document.getElementById(gameState.currentScreen).style.display = 'none';
+            
+            // Mostrar nova tela
+            const newScreen = document.getElementById(screenId);
+            newScreen.style.display = 'flex';
+            
+            // Atualizar estado atual
+            gameState.currentScreen = screenId;
+            
+            // Se for uma tela de história, reiniciar a animação de texto
+            if (newScreen.classList.contains('story-screen')) {
+                const storyText = newScreen.querySelector('.story-text');
+                if (storyText) {
+                    // Reset da animação
+                    storyText.style.animation = 'none';
+                    storyText.offsetHeight; // Trigger reflow
+                    storyText.style.animation = 'scroll-up-story 30s linear forwards';
+                }
+            }
+        }
+        
+        // SISTEMA DE COMBATE
+        function startCombat(enemy, icon, nextScreen) {
+            gameState.combatEnemy = enemy;
+            gameState.combatEnemyIcon = icon;
+            gameState.combatNextScreen = nextScreen;
+            gameState.playerHealth = 100;
+            gameState.enemyHealth = 100;
+            gameState.itemsUsed = 0;
+            gameState.playerTurn = true;
+            
+            // Atualizar interface
+            document.getElementById('enemy-name').textContent = enemy;
+            document.getElementById('enemy-icon').textContent = icon;
+            document.getElementById('player-health').style.width = '100%';
+            document.getElementById('enemy-health').style.width = '100%';
+            document.getElementById('combat-log').innerHTML = `<p>Você está enfrentando ${enemy}! Prepare-se!</p>`;
+            
+            // Navegar para tela de combate
+            navigateTo('combat-screen');
+        }
+        
+        function updateCombatLog(message) {
+            const log = document.getElementById('combat-log');
+            log.innerHTML = `<p>${message}</p>` + log.innerHTML;
+        }
+        
+        function playerAttack() {
+            if (!gameState.playerTurn) return;
+            
+            // Itens de ataque aleatórios e engraçados
+            const attacks = [
+                'lança um vírus de macumba digital',
+                'arremessa um pendrive em forma de galinha preta',
+                'desenha um ponto de Exu em código binário',
+                'invoca um meme amaldiçoado',
+                'hackeia o chackra tecnológico',
+                'lança uma cafeteira possuída',
+                'atira com um revólver carregado com balas de sal grosso digital',
+                'invoca a imagem de vovó destruidora de smartphones',
+                'solta um gato preto feito de pixels',
+                'lança spam de corrente de má sorte'
+            ];
+            
+            const attack = attacks[Math.floor(Math.random() * attacks.length)];
+            const damage = Math.floor(Math.random() * 20) + 10;
+            
+            gameState.enemyHealth -= damage;
+            if (gameState.enemyHealth < 0) gameState.enemyHealth = 0;
+            
+            document.getElementById('enemy-health').style.width = `${gameState.enemyHealth}%`;
+            updateCombatLog(`Você ${attack} e causa ${damage} de dano!`);
+            
+            // Verificar vitória
+            if (gameState.enemyHealth <= 0) {
+                endCombat(true);
+                return;
+            }
+            
+            // Turno do inimigo
+            gameState.playerTurn = false;
+            setTimeout(enemyAttack, 1500);
+        }
+        
+        function playerDefend() {
+            if (!gameState.playerTurn) return;
+            
+            // Defesas aleatórias e engraçadas
+            const defenses = [
+                'ergue um escudo de spam filtrado',
+                'ativa o modo "não perturbe" espiritual',
+                'esconde-se atrás de um CAPTCHA',
+                'levanta uma barreira de termos e condições',
+                'invoca o espírito do antivírus gratuito',
+                'usa uma sombrinha de frevo como escudo',
+                'levanta uma barreira de "em manutenção"',
+                'se protege com um amuleto de controle remoto',
+                'desenha círculo de proteção feito de emoji',
+                'invoca o fantasma do Internet Explorer'
+            ];
+            
+            const defense = defenses[Math.floor(Math.random() * defenses.length)];
+            
+            updateCombatLog(`Você ${defense} e se prepara para o próximo ataque.`);
+            
+            // Recuperar um pouco de vida
+            const heal = Math.floor(Math.random() * 10) + 5;
+            gameState.playerHealth += heal;
+            if (gameState.playerHealth > 100) gameState.playerHealth = 100;
+            
+            document.getElementById('player-health').style.width = `${gameState.playerHealth}%`;
+            updateCombatLog(`Você recupera ${heal} pontos de vida.`);
+            
+            // Turno do inimigo
+            gameState.playerTurn = false;
+            setTimeout(enemyAttack, 1500);
+        }
+        
+        function playerSpecial() {
+            if (!gameState.playerTurn) return;
+            
+            // Especiais aleatórios e engraçados
+            const specials = [
+                'invoca o espírito do Windows 95',
+                'canaliza o poder da Cafeteira Oracular',
+                'ativa o modo Berserker com Red Bull Místico',
+                'libera o vírus da dancinha constrangedora',
+                'convoca o 4chan das entidades',
+                'ativa a exu.exe',
+                'abre o portal para o stackoverflow dos orixás',
+                'usa a maldição do PowerPoint travado',
+                'invoca a Pombagira da Discórdia Digital',
+                'lança o ataque DDoS de Zé Pilintra'
+            ];
+            
+            const special = specials[Math.floor(Math.random() * specials.length)];
+            const damage = Math.floor(Math.random() * 30) + 20;
+            
+            gameState.enemyHealth -= damage;
+            if (gameState.enemyHealth < 0) gameState.enemyHealth = 0;
+            
+            document.getElementById('enemy-health').style.width = `${gameState.enemyHealth}%`;
+            updateCombatLog(`Você ${special} e causa ${damage} de dano massivo!`);
+            
+            // Verificar vitória
+            if (gameState.enemyHealth <= 0) {
+                endCombat(true);
+                return;
+            }
+            
+            // Turno do inimigo
+            gameState.playerTurn = false;
+            setTimeout(enemyAttack, 1500);
+        }
+        
+        function playerUseItem() {
+            if (!gameState.playerTurn || gameState.itemsUsed >= 3) return;
+            
+            // Itens aleatórios e engraçados
+            const items = [
+                'Café com Dendê Quântico',
+                'Pen Drive Benzido',
+                'Backup Espiritual',
+                'Patch de Proteção Ancestral',
+                'Bala de Goma Tecno-Xamânica',
+                'Salgadinho de Terreiro Digital',
+                'Água Benta em Cartucho de Tinta',
+                'Amuleto de Bateria Carregada',
+                'Pomba-Gira Pocket',
+                'Controle Remoto Universal de Entidades'
+            ];
+            
+            const item = items[Math.floor(Math.random() * items.length)];
+            
+            // Efeito aleatório
+            const effect = Math.random();
+            
+            if (effect < 0.5) {
+                // Cura
+                const heal = Math.floor(Math.random() * 40) + 20;
+                gameState.playerHealth += heal;
+                if (gameState.playerHealth > 100) gameState.playerHealth = 100;
+                
+                document.getElementById('player-health').style.width = `${gameState.playerHealth}%`;
+                updateCombatLog(`Você usa ${item} e recupera ${heal} pontos de vida!`);
+            } else {
+                // Dano
+                const damage = Math.floor(Math.random() * 40) + 20;
+                gameState.enemyHealth -= damage;
+                if (gameState.enemyHealth < 0) gameState.enemyHealth = 0;
+                
+                document.getElementById('enemy-health').style.width = `${gameState.enemyHealth}%`;
+                updateCombatLog(`Você usa ${item} e causa ${damage} de dano ao inimigo!`);
+                
+                // Verificar vitória
+                if (gameState.enemyHealth <= 0) {
+                    endCombat(true);
+                    return;
+                }
+            }
+            
+            gameState.itemsUsed++;
+            
+            // Desabilitar botão se já usou 3 itens
+            if (gameState.itemsUsed >= 3) {
+                document.getElementById('item-btn').disabled = true;
+                document.getElementById('item-btn').textContent = 'Sem Itens Restantes';
+            }
+            
+            // Turno do inimigo
+            gameState.playerTurn = false;
+            setTimeout(enemyAttack, 1500);
+        }
+        
+        function enemyAttack() {
+            // Ataques inimigos aleatórios e engraçados
+            const attacks = [
+                'lança um vírus corporativo',
+                'joga um processo judicial digital',
+                'envia spam de notificação',
+                'ataca com termos de serviço',
+                'usa ataque de popup infinito',
+                'invoca uma falha de segurança',
+                'lança update obrigatório',
+                'ameaça com formatação total',
+                'dispara ondas de marketing agressivo',
+                'ataca com música de espera infinita'
+            ];
+            
+            const attack = attacks[Math.floor(Math.random() * attacks.length)];
+            const damage = Math.floor(Math.random() * 15) + 5;
+            
+            gameState.playerHealth -= damage;
+            if (gameState.playerHealth < 0) gameState.playerHealth = 0;
+            
+            document.getElementById('player-health').style.width = `${gameState.playerHealth}%`;
+            updateCombatLog(`${gameState.combatEnemy} ${attack} e causa ${damage} de dano!`);
+            
+            // Verificar derrota
+            if (gameState.playerHealth <= 0) {
+                endCombat(false);
+                return;
+            }
+            
+            // Devolver turno ao jogador
+            gameState.playerTurn = true;
+        }
+        
+        function endCombat(victory) {
+            if (victory) {
+                updateCombatLog(`Você derrotou ${gameState.combatEnemy}!`);
+                setTimeout(() => {
+                    navigateTo(gameState.combatNextScreen);
+                }, 2000);
+            } else {
+                updateCombatLog(`Você foi derrotado por ${gameState.combatEnemy}!`);
+                setTimeout(() => {
+                    navigateTo('game-over');
+                }, 2000);
+            }
+        }
+        
+        // INICIALIZAÇÃO DO JOGO
+        document.addEventListener('DOMContentLoaded', function() {
+            // Criar símbolos cyberpunk flutuantes
+            createCyberSymbols();
+            
+            // Configurar botão de início
+            document.getElementById('start-btn').addEventListener('click', function() {
+                navigateTo('prologue-screen');
+                setTimeout(() => {
+                    navigateTo('chapter1');
+                }, 60000); // Tempo para ler o prólogo (ajuste conforme necessário)
+            });
+            
+            // Configurar botões de escolha
+            document.querySelectorAll('.choice-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const goto = this.getAttribute('data-goto');
+                    const choice = this.getAttribute('data-choice');
+                    
+                    if (choice === 'combat') {
+                        const enemy = this.getAttribute('data-enemy');
+                        const icon = this.getAttribute('data-enemy-emoji');
+                        startCombat(enemy, icon, goto);
+                    } else {
+                        navigateTo(goto);
+                    }
+                });
+            });
+            
+            // Configurar botões de combate
+            document.getElementById('attack-btn').addEventListener('click', playerAttack);
+            document.getElementById('defend-btn').addEventListener('click', playerDefend);
+            document.getElementById('special-btn').addEventListener('click', playerSpecial);
+            document.getElementById('item-btn').addEventListener('click', playerUseItem);
+        });
+    </script>
+</body>
+</html>
